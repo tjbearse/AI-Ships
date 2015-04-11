@@ -44,6 +44,10 @@ while True:
     # get game state
     state.read()
 
+    # are we flying backwards?
+    backwards = abs(getAngle(state.ship.dx, state.ship.dy) - state.ship.angle) > 150
+    velocity = magnitude(state.ship.dx, state.ship.dy)
+
     if(state.asteroids):
         close = closest(state.ship, state.asteroids)
         angle = getEntityAngle(state.ship, close)
@@ -58,10 +62,6 @@ while True:
 
         distance = dist(state.ship, close)
 
-        # are we flying backwards?
-        backwards = abs(getAngle(state.ship.dx, state.ship.dy) - state.ship.angle) > 150
-
-        velocity = magnitude(state.ship.dx, state.ship.dy)
 
         if(abs(state.ship.angle - angle) < thresh and distance > 400 and velocity < 5):
             # if closest object is far away boost to it
@@ -71,6 +71,12 @@ while True:
             r.set_thrust(True)
         else:
             r.set_thrust(False)
+    else:
+        backwards = abs(getAngle(state.ship.dx, state.ship.dy) - state.ship.angle) > 150
+        r.set_thrust(backwards)
+        r.set_fire(False)
+        if(not backwards):
+            r.set_ccw()
 
     # send command
     r.send()
