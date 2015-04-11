@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+#
+# Remote control for testing
+#
+
 from gamestate import Response, GameState
 import sys
 import pygame
@@ -18,7 +23,7 @@ count = 0;
 rotate_left = False
 rotate_right = False
 while running:
-    state.read()
+    state.read() # just to consume stdin/wait for turn
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False

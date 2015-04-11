@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+#
+# Naive-ish implementation of an Argh-steroids ship
+#
+
 import gamestate as gs
 import sys
 import math
