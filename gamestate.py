@@ -23,27 +23,40 @@ class GameState():
         self.bullets = []
         self.alien = None
         self.ship = None
-        self.height, self.width = fd.readline().split()
+        try:
+            self.height, self.width = fd.readline().split()
+        except Exception as e:
+            sys.stderr.write("Getting global settings failed\n")
+            quit()
         self.height = int(self.height)
         self.width = int(self.width)
 
     def read(self, fd=sys.stdin):
-        num = int(fd.readline())
-        self.asteroids = []
-        self.bullets = []
-        self.alien = None
-        self.ship = None
-        for i in range(num):
-            words = fd.readline().split()
-            if(words[0] == 'asteroid'):
-                self.asteroids.append(Asteroid(*words[1:]))
-            elif(words[0] == 'ship'):
-                self.ship = Ship(*words[1:])
-            elif(words[0] == 'alien'):
-                self.alien = Entity(*words[1:])
-            elif(words[0] == 'bullet'):
-                self.bullets.append(Entity(*words[1:]))
-        fd.readline() # "stop"
+        try:
+            try:
+                num = int(fd.readline())
+            except ValueError:
+                sys.stderr.write("Malformated or missing input\n")
+                quit()
+
+            self.asteroids = []
+            self.bullets = []
+            self.alien = None
+            self.ship = None
+            for i in range(num):
+                words = fd.readline().split()
+                if(words[0] == 'asteroid'):
+                    self.asteroids.append(Asteroid(*words[1:]))
+                elif(words[0] == 'ship'):
+                    self.ship = Ship(*words[1:])
+                elif(words[0] == 'alien'):
+                    self.alien = Entity(*words[1:])
+                elif(words[0] == 'bullet'):
+                    self.bullets.append(Entity(*words[1:]))
+            fd.readline() # "stop"
+        except IOError:
+            sys.stderr.write("Reading from parent failed\n")
+            quit()
 
 
 class Response():
@@ -77,4 +90,5 @@ class Response():
             fd.write("%s %s %s\n" % (turn, thrust, fire))
             fd.flush()
         except IOError:
-            pass
+            sys.stderr.write("Communication with parent failed")
+            quit()
